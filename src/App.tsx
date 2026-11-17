@@ -195,7 +195,7 @@ export function App({
     });
     if (
       "serviceWorker" in navigator &&
-      ["customer", "driver"].includes(surface)
+      ["customer", "driver", "partner"].includes(surface)
     )
       navigator.serviceWorker.register("/sw.js").catch(() => {});
     return () => {

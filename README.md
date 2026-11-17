@@ -12,7 +12,18 @@ The project uses custom React SSR rather than TanStack Start so the Netlify Serv
 
 Install Node.js 24 and dependencies with `npm install`, link the project in the Netlify CLI, and run `netlify dev --port 8889`. The Netlify runtime is needed for Database and Blobs. Identity flows require a deployed site. The normal deployment build produces the client in `dist` and the SSR module in `dist-server`; do not publish a static root index.html, since the server renders the root route.
 
-Hostname routing selects `driver.dailybasicdelivery.com`, `partner.dailybasicdelivery.com`, and `admin.dailybasicdelivery.com` exactly. `app.dailybasicdelivery.com` and the Netlify preview hostname render the customer application. There is intentionally no app switcher or customer link to another audience's app. Custom subdomains must be attached to the project, pointed to Netlify, and have TLS before use.
+Hostname routing selects each application on its own HTTPS origin:
+
+| Application | URLs | Mobile support |
+| --- | --- | --- |
+| Customer | `https://dailybasicdelivery.com`, `https://app.dailybasicdelivery.com` | Installable mobile web app; customer Android project |
+| Driver | `https://driver.dailybasicdelivery.com` | Installable mobile web app; driver Android project |
+| Partner | `https://partner.dailybasicdelivery.com` | Installable mobile web app |
+| Admin Dashboard | `https://admin.dailybasicdelivery.com` | Browser dashboard |
+
+Only the exact driver, partner, and admin production hostnames select their respective workspaces. Netlify preview hostnames render the customer application. There is intentionally no app switcher or customer link to another audience's app. All five production hostnames were attached to the Netlify project and returned the expected application over HTTPS during the November 17, 2026 check; no DNS or alias changes were needed.
+
+Customer, driver, and partner each expose an origin-scoped web app manifest with standalone display and register a service worker. On a supported mobile browser, use its Install app or Add to Home Screen action at the relevant URL. Each origin has its own installation and session. An internet connection is required for application data; private responses are never cached. The Partner App is available as a mobile web app; it does not yet have a native Android project or signed store package. The Admin Dashboard does not expose an installable manifest. Hostname selection does not grant permissions: authenticated backend checks still control access to each workspace's data.
 
 ## Database and access
 

@@ -927,10 +927,22 @@ route("get", "/api/admin/export/orders.csv", async (req, res) => {
 });
 app.get("/manifest.webmanifest", (req, res) => {
   const surface = experience(req.hostname);
-  if (!["customer", "driver"].includes(surface)) return res.status(404).end();
+  if (!["customer", "driver", "partner"].includes(surface))
+    return res.status(404).end();
   res.type("application/manifest+json").send({
-    name: surface === "driver" ? "DBD Driver" : "DBD App",
-    short_name: "DBD",
+    name:
+      surface === "driver"
+        ? "DBD Driver"
+        : surface === "partner"
+          ? "DBD Partner"
+          : "DBD App",
+    short_name:
+      surface === "driver"
+        ? "DBD Driver"
+        : surface === "partner"
+          ? "DBD Partner"
+          : "DBD",
+    id: "/",
     start_url: "/",
     scope: "/",
     display: "standalone",

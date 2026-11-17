@@ -18,6 +18,15 @@ test("all four hostnames are isolated, preview defaults to customer", () => {
   ])
     assert.equal(experience(sub + ".dailybasicdelivery.com"), app);
   assert.equal(experience("delivery-platform-7c8957.netlify.app"), "customer");
+  assert.equal(experience("dailybasicdelivery.com"), "customer");
+  assert.equal(experience("DRIVER.dailybasicdelivery.com:443"), "driver");
+  for (const sub of ["driver", "partner", "admin"]) {
+    assert.equal(
+      experience(`${sub}--delivery-platform-7c8957.netlify.app`),
+      "customer",
+    );
+    assert.equal(experience(`${sub}.dailybasicdelivery.com.evil.test`), "customer");
+  }
   assert.equal(
     experience("admin.dailybasicdelivery.com.evil.test"),
     "customer",

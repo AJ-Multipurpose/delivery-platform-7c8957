@@ -70,7 +70,7 @@ export function render(surface: any, path: string, catalog?: any) {
     ".dailybasicdelivery.com" +
     esc(path) +
     '"/><link rel="icon" type="image/svg+xml" href="/img/icon.svg"/>' +
-    (["customer", "driver"].includes(surface)
+    (["customer", "driver", "partner"].includes(surface)
       ? '<link rel="manifest" href="/manifest.webmanifest"/>'
       : "") +
     '<link rel="stylesheet" href="/assets/app.css"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;450;500;550;600;650;700;750;800&amp;family=Sora:wght@400;500;550;600;650;700;750;800&amp;display=swap"/></head><body><div id="root">' +
