@@ -1,0 +1,26 @@
+// Release credentials are read from the external signing environment only.
+def prefix = project.ext.dbdSigningPrefix
+def names = ['KEYSTORE', 'STORE_PASSWORD', 'KEY_ALIAS', 'KEY_PASSWORD']
+def credentials = names.collectEntries { [(it): System.getenv(prefix + '_' + it)] }
+def configured = credentials.values().every { it != null && !it.isBlank() }
+if (configured) {
+    def keyFile = file(credentials.KEYSTORE).canonicalFile
+    def repository = new File(rootProject.projectDir, '../../..').canonicalFile
+    if (keyFile.toPath().startsWith(repository.toPath())) {
+        throw new GradleException('Release upload keys must be stored outside the source repository.')
+    }
+    android.signingConfigs {
+        dbdRelease {
+            storeFile keyFile
+            storePassword credentials.STORE_PASSWORD
+            keyAlias credentials.KEY_ALIAS
+            keyPassword credentials.KEY_PASSWORD
+        }
+    }
+    android.buildTypes.release.signingConfig = android.signingConfigs.dbdRelease
+}
+gradle.taskGraph.whenReady { graph ->
+    if (graph.allTasks.any { it.name in ['assembleRelease', 'bundleRelease'] } && !configured) {
+        throw new GradleException('Configure the external signing environment for this DBD app before creating a release.')
+    }
+}
